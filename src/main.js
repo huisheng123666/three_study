@@ -1,2 +1,2 @@
-import './lesson/lesson2'
+import './lesson/lesson3'
 
