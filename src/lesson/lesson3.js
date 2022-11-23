@@ -43,11 +43,11 @@ mafeiColorTexture.magFilter = THREE.NearestFilter
 // 创建几何体
 const cubeGeometry = new THREE.BoxGeometry(1, 1, 1)
 const cubeMaterial = new THREE.MeshBasicMaterial({
-    map: mafeiColorTexture,
+    // map: mafeiColorTexture,
     alphaMap: alphaTexture,
     // transparent: true,
     side: THREE.DoubleSide, // 平面渲染几面
-    // aoMap: mafeiAoTexture, // 环境光遮挡
+    aoMap: mafeiAoTexture, // 环境光遮挡
 })
 // 根据几何体和材质创建物体
 const cube = new THREE.Mesh(cubeGeometry, cubeMaterial)
@@ -74,11 +74,11 @@ window.addEventListener('dblclick', () => {
     // } else {
     //     animation1.resume()
     // }
-    
+
     // 全屏
     const fullScreenElement = document.fullscreenElement
     if (!fullScreenElement) {
-        renderer.domElement.requestFullscreen()    
+        renderer.domElement.requestFullscreen()
     } else {
         document.exitFullscreen()
     }
@@ -102,11 +102,11 @@ window.addEventListener('resize', () => {
 })
 
 // 添加平面
-const planeGeometry = new THREE.PlaneGeometry(1, 1)
-const plane = new THREE.Mesh(planeGeometry, cubeMaterial)
-
-plane.position.set(3, 0, 0)
-scene.add(plane)
-
-// 给平面设置第二组UV
-planeGeometry.setAttribute('uv2', new THREE.BufferAttribute(planeGeometry.attributes.uv.array, 2))
+// const planeGeometry = new THREE.PlaneGeometry(1, 1)
+// const plane = new THREE.Mesh(planeGeometry, cubeMaterial)
+//
+// plane.position.set(3, 0, 0)
+// scene.add(plane)
+//
+// // 给平面设置第二组UV
+// planeGeometry.setAttribute('uv2', new THREE.BufferAttribute(planeGeometry.attributes.uv.array, 2))
