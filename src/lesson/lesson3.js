@@ -74,11 +74,11 @@ window.addEventListener('dblclick', () => {
     // } else {
     //     animation1.resume()
     // }
-    
+
     // 全屏
     const fullScreenElement = document.fullscreenElement
     if (!fullScreenElement) {
-        renderer.domElement.requestFullscreen()    
+        renderer.domElement.requestFullscreen()
     } else {
         document.exitFullscreen()
     }
