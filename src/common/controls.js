@@ -5,23 +5,56 @@ const basicType = {
     method: 'addColor',
     getValue: item => item.color.getStyle(),
     setValue: (item, value) => item.color.set(value)
+  },
+  intensity: {
+    method: 'add',
+    extends: [0, 10],
+    getValue: item => item.intensity,
+    setValue: (item, value) => item.intensity = +value
+  },
+  distance: {
+    method: 'add',
+    extends: [0, 2],
+    getValue: item => item.distance,
+    setValue: (item, value) => item.distance = +value
+  },
+  angle: {
+    method: 'add',
+    extends: [0, Math.PI / 2],
+    getValue: item => item.angle,
+    setValue: (item, value) => item.angle = +value
+  },
+  exponent: {
+    method: 'add',
+    extends: [0, 20],
+    getValue: item => item.exponent,
+    setValue: (item, value) => item.exponent = +value
   }
 }
 
+const itemType = {
+  SpotLight: ['color', 'intensity', 'distance', 'angle', 'exponent']
+}
+
 export function initControls(item) {
+  console.log(item)
+  const typeList = itemType[item.type]
+
+  const controls = {}
+
+  if (!typeList.length) return;
+
   const gui = new dat.GUI()
-  const controls = {
-    color: 0xffffff,
-    intensity: 1,
-    distance: 0,
-    angle: Math.PI / 3,
-    exponent: 10
+
+  for (let i = 0; i < typeList.length; i++) {
+    const child = basicType[typeList[i]]
+    if (child) {
+      controls[typeList[i]] = child.getValue(item)
+      const childExtends = child.extends || []
+      gui[child.method || 'add'](controls, typeList[i], ...childExtends).onChange((value) => {
+        child.setValue(item, value)
+      })
+    }
   }
 
-  const key = ''
-
-  gui.addColor(controls, 'color').onChange(value => {
-    controls.color = value
-    item.color.set(value)
-  })
 }
