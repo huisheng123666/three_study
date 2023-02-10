@@ -46,15 +46,17 @@ scene.add(plane)
 const spotLight = new THREE.SpotLight(0xffffff)
 spotLight.position.set(-10, 10, 90)
 
-initControls(spotLight)
+// initControls(spotLight)
 
 scene.add(spotLight)
 
-// 环境光
-const ambientLight = new THREE.AmbientLight(0x000000)
-scene.add(ambientLight)
+// 点光
+const pointLight = new THREE.PointLight(0x000000)
+pointLight.position.set(-10, 10, 90)
 
-initControls(ambientLight)
+scene.add(pointLight)
+
+initControls(pointLight)
 
 // 让两个三维物体产生阴影，球体立方体
 cube.castShadow = true
@@ -62,11 +64,8 @@ sphere.castShadow = true
 // 使用平面接受阴影
 plane.receiveShadow = true
 // 设置灯光开启阴影
-spotLight.castShadow = true
+pointLight.castShadow = true
 renderer.shadowMap.enabled = true
-
-spotLight.shadow.mapSize.width = 4096
-spotLight.shadow.mapSize.height = 4096
 
 const animation = () => {
   cube.rotation.x += 0.01

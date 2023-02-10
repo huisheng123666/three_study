@@ -43,18 +43,20 @@ plane.position.x = 3
 scene.add(plane)
 
 // 添加灯光
-const spotLight = new THREE.SpotLight(0xffffff)
-spotLight.position.set(-10, 10, 90)
+// const spotLight = new THREE.SpotLight(0xffffff)
+// spotLight.position.set(-10, 10, 90)
+//
+// // initControls(spotLight)
+//
+// scene.add(spotLight)
 
-initControls(spotLight)
+// 半球光
+const hemisphereLight = new THREE.HemisphereLight(0xff00ff, 0x00ff00)
+hemisphereLight.position.set(-10, 10, 30)
 
-scene.add(spotLight)
+scene.add(hemisphereLight)
 
-// 环境光
-const ambientLight = new THREE.AmbientLight(0x000000)
-scene.add(ambientLight)
-
-initControls(ambientLight)
+initControls(hemisphereLight)
 
 // 让两个三维物体产生阴影，球体立方体
 cube.castShadow = true
@@ -62,15 +64,14 @@ sphere.castShadow = true
 // 使用平面接受阴影
 plane.receiveShadow = true
 // 设置灯光开启阴影
-spotLight.castShadow = true
+hemisphereLight.castShadow = true
 renderer.shadowMap.enabled = true
-
-spotLight.shadow.mapSize.width = 4096
-spotLight.shadow.mapSize.height = 4096
 
 const animation = () => {
   cube.rotation.x += 0.01
   cube.rotation.y += 0.01
+  hemisphereLight.position.z -= 0.1
+
   renderer.render(scene, camera)
   requestAnimationFrame(animation)
 }

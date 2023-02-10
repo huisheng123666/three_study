@@ -6,6 +6,11 @@ const basicType = {
     getValue: item => item.color.getStyle(),
     setValue: (item, value) => item.color.set(value)
   },
+  groundColor: {
+    method: 'addColor',
+    getValue: item => item.color.getStyle(),
+    setValue: (item, value) => item.color.set(value)
+  },
   intensity: {
     method: 'add',
     extends: [0, 10],
@@ -14,9 +19,9 @@ const basicType = {
   },
   distance: {
     method: 'add',
-    extends: [0, 2],
+    extends: [0, 20000],
     getValue: item => item.distance,
-    setValue: (item, value) => item.distance = +value
+    setValue: (item, value) => item.distance = value
   },
   angle: {
     method: 'add',
@@ -24,16 +29,20 @@ const basicType = {
     getValue: item => item.angle,
     setValue: (item, value) => item.angle = +value
   },
-  exponent: {
+  decay: {
     method: 'add',
     extends: [0, 20],
-    getValue: item => item.exponent,
-    setValue: (item, value) => item.exponent = +value
+    getValue: item => item.decay,
+    setValue: (item, value) => item.decay = +value
   }
 }
 
 const itemType = {
-  SpotLight: ['color', 'intensity', 'distance', 'angle', 'exponent']
+  SpotLight: ['color', 'intensity', 'distance', 'angle', 'decay'],
+  AmbientLight: ['color'],
+  PointLight: ['color', 'intensity', 'distance'],
+  DirectionalLight: ['color', 'intensity'],
+  HemisphereLight: ['skyColor', 'groundColor', 'intensity']
 }
 
 export function initControls(item) {
