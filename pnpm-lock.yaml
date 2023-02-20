@@ -1,12 +1,14 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@tweenjs/tween.js': ^18.6.4
   dat.gui: ^0.7.9
   gsap: ^3.11.1
   parcel: ^2.7.0
   three: ^0.149.0
 
 dependencies:
+  '@tweenjs/tween.js': 18.6.4
   dat.gui: 0.7.9
   gsap: 3.11.1
   three: 0.149.0
@@ -874,6 +876,10 @@ packages:
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
     engines: {node: '>=10.13.0'}
     dev: true
+
+  /@tweenjs/tween.js/18.6.4:
+    resolution: {integrity: sha512-lB9lMjuqjtuJrx7/kOkqQBtllspPIN+96OvTCeJ2j5FEzinoAXTdAMFnDAQT1KVPRlnYfBrqxtqP66vDM40xxQ==}
+    dev: false
 
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
