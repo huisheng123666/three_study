@@ -30,6 +30,8 @@ const mats = []
 
 let cubeCamera = null
 
+let cube = null
+
 async function loadTexture() {
   for (let i = 0; i < imgs.length; i++) {
     mats.push(new THREE.MeshBasicMaterial({
@@ -45,9 +47,10 @@ async function loadTexture() {
   const sphereGeometry = new THREE.SphereGeometry(4, 15, 15)
   const boxGeometry = new THREE.BoxGeometry(5, 5, 5)
 
-  const cubeRenderTarget = new THREE.WebGLCubeRenderTarget( 256);
+  const cubeRenderTarget = new THREE.WebGLCubeRenderTarget( 256 );
+  cubeRenderTarget.texture.type = THREE.HalfFloatType;
 
-  cubeCamera = new THREE.CubeCamera(0.1, 2000, cubeRenderTarget)
+  cubeCamera = new THREE.CubeCamera( 1, 1000, cubeRenderTarget );
 
   scene.add(cubeCamera)
 
@@ -56,14 +59,12 @@ async function loadTexture() {
   })
 
   const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial)
-  const cube = new THREE.Mesh(boxGeometry, mats)
+  cube = new THREE.Mesh(boxGeometry, mats)
   sphere.position.x = 5
   cube.position.x = -5
 
   scene.add(sphere)
   scene.add(cube)
-
-  return cube
 }
 
 
@@ -84,23 +85,18 @@ spotLight.shadowMapHeight = 4096;
 
 let timer = 0
 
-const animation = async () => {
-  let cube = null
-  if (!cubeCamera) {
-    cube = await loadTexture()
+renderer.setAnimationLoop( animation );
+
+loadTexture()
+
+async function animation( msTime ) {
+  if (cube) {
+    cube.rotation.x += 0.01
   }
-
   if (cubeCamera) {
-    orbitControls.update()
-    cubeCamera.update(renderer, scene)
+    cubeCamera.update( renderer, scene );
+    orbitControls.update();
 
-    //
-    camera.updateProjectionMatrix()
-    // 渲染
-    renderer.render(scene, camera);
-
-
-    requestAnimationFrame(animation);
+    renderer.render( scene, camera );
   }
 }
-animation()
