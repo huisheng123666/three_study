@@ -8,7 +8,7 @@ const scene = new THREE.Scene();
 // 创建一个相机 视点
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
 // 设置相机的位置
-camera.position.set(200,300,300);
+camera.position.set(300,300,300);
 camera.lookAt(new THREE.Vector3(0, 0, 0))
 
 // 创建一个渲染器
@@ -24,10 +24,6 @@ spotLight.position.set(2000,8000,4000);
 scene.add(spotLight);
 
 const orbitControls = new OrbitControls(camera, renderer.domElement)
-
-
-const total = 20
-
 
 function getSprite() {
   const canvas = document.createElement('canvas')
@@ -56,8 +52,8 @@ const newPos = []
 
 
 function createNormalSprite(type) {
-  for (let i = -5; i < 5; i++) {
-    for (let j = -5; j < 5; j++) {
+  for (let i = -5; i <= 5; i++) {
+    for (let j = -5; j <= 5; j++) {
       const material = new THREE.SpriteMaterial({
         map: getSprite()
       })
@@ -70,7 +66,7 @@ function createNormalSprite(type) {
           sprite.position.set(i * 10, j * 10, 50)
           break
         case 3:
-          sprite.position.set(i * 10, 40, j * 10)
+          sprite.position.set(i * 10, 50, j * 10)
           break
         case 4:
           sprite.position.set(i * 10, -50, j * 10)
@@ -119,7 +115,7 @@ function open(open) {
       duration: 2,
       repeat: 0,
       // yoyo: true,
-      ease: 'power2'
+      ease: "power2" 
     })
   })
 }

@@ -60,7 +60,6 @@ scene.add( rectLightHelper );
 const loader = new GLTFLoader();
 
 loader.load( '/gold-coin.glb', function ( gltf ) {
-  console.log(gltf.scene)
   const model = gltf.scene
   scene.add(model);
   model.traverse( function ( object ) {

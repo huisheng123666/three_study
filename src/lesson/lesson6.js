@@ -1,28 +1,31 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 
+const cubeTextureLoader = new THREE.CubeTextureLoader()
+const envMapTexture = cubeTextureLoader.load([
+    '/textures/environmentMaps/1/px.jpg',
+    '/textures/environmentMaps/1/nx.jpg',
+    '/textures/environmentMaps/1/py.jpg',
+    '/textures/environmentMaps/1/ny.jpg',
+    '/textures/environmentMaps/1/pz.jpg',
+    '/textures/environmentMaps/1/nz.jpg',
+])
+
+const rgbeLoader = new RGBELoader()
+rgbeLoader.loadAsync('/textures/hdr/round_platform_1k.hdr').then((texture) => {
+    texture.mapping = THREE.EquirectangularReflectionMapping
+    scene.background = texture
+    scene.environment = texture
+})
+
+/* ----------------------- 场景 ----------------------------- */
 const scene = new THREE.Scene()
+// 环境贴图
+// scene.background = envMapTexture
+// scene.environment = envMapTexture
 
-const textureLoader = new THREE.TextureLoader()
-const doorColorTexture = textureLoader.load('/textures/door/color.jpg')
-// 透明纹理
-const alphaTexture = textureLoader.load('/textures/door/alpha.jpg')
-const aoTexture = textureLoader.load('/textures/door/ambientOcclusion.jpg')
-
-doorColorTexture.minFilter = THREE.NearestFilter
-doorColorTexture.magFilter = THREE.NearestFilter
-
-// doorColorTexture.offset.set(0.4, 0.1)
-// doorColorTexture.rotation = Math.PI / 4
-// doorColorTexture.center.set(0.5, 0.5)
-
-// // 设置重复
-// doorColorTexture.repeat.set(2, 1)
-// // 水平方向
-// doorColorTexture.wrapS = THREE.MirroredRepeatWrapping // 镜像重复
-// // 垂直方向
-// doorColorTexture.wrapT = THREE.RepeatWrapping
-
+/* ------------------- 相机 ------------------------------ */
 // 透视相机
 const camera = new THREE.PerspectiveCamera(
     45,
@@ -35,32 +38,26 @@ camera.position.set(5, 5, 5)
 
 scene.add(camera)
 
-// 创建几何体
-const cubeGeometry = new THREE.BoxGeometry(1, 1, 1)
-cubeGeometry.setAttribute('uv2', new THREE.BufferAttribute(cubeGeometry.attributes.uv.array, 2))
 
-const cubeMaterial = new THREE.MeshBasicMaterial({
-    map: doorColorTexture,
-    alphaMap: alphaTexture,
-    transparent: true,
-    side: THREE.DoubleSide,
-    aoMap: aoTexture,
-    aoMapIntensity: 1
+/* ---------------- 物体 ------------------- */
+const sphereGeometry = new THREE.SphereGeometry(1, 30, 30)
+const sphereMaterial = new THREE.MeshStandardMaterial({
+    metalness: 0.7,
+    roughness: 0.1,
 })
+const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial)
 
-// 根据几何体和材质创建物体
-const cube = new THREE.Mesh(cubeGeometry, cubeMaterial)
+scene.add(sphere)
 
-scene.add(cube)
 
 /* --------------------- 灯光 ------------------- */
 // 环境光
-const light = new THREE.AmbientLight(0xfffffff, 0.3)
+const light = new THREE.AmbientLight(0xfffffff, 0.5)
 
 // 直线光
 const directionalLight = new THREE.DirectionalLight(0xfffffff, 1)
 
-directionalLight.position.set(-10, 10, 10)
+directionalLight.position.set(10, 10, 10)
 
 scene.add(directionalLight)
 

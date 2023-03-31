@@ -3,25 +3,28 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 const scene = new THREE.Scene()
 
-const textureLoader = new THREE.TextureLoader()
+const loaderManager = new THREE.LoadingManager()
+
+loaderManager.onProgress = (e) => {
+    console.log(e)
+}
+
+const textureLoader = new THREE.TextureLoader(loaderManager)
 const doorColorTexture = textureLoader.load('/textures/door/color.jpg')
 // 透明纹理
 const alphaTexture = textureLoader.load('/textures/door/alpha.jpg')
 const aoTexture = textureLoader.load('/textures/door/ambientOcclusion.jpg')
 
+// 导入置换纹理
+const doorHeightTexture = textureLoader.load('/textures/door/height.jpg')
+// 导入粗糙度贴图
+const doorRoughnessTexture = textureLoader.load('/textures/door/roughness.jpg')
+// 导入金属度贴图
+const doorMetalnessTexture = textureLoader.load('/textures/door/metalness.jpg')
+const doorNormalTexture = textureLoader.load('/textures/door/normal.jpg')
+
 doorColorTexture.minFilter = THREE.NearestFilter
 doorColorTexture.magFilter = THREE.NearestFilter
-
-// doorColorTexture.offset.set(0.4, 0.1)
-// doorColorTexture.rotation = Math.PI / 4
-// doorColorTexture.center.set(0.5, 0.5)
-
-// // 设置重复
-// doorColorTexture.repeat.set(2, 1)
-// // 水平方向
-// doorColorTexture.wrapS = THREE.MirroredRepeatWrapping // 镜像重复
-// // 垂直方向
-// doorColorTexture.wrapT = THREE.RepeatWrapping
 
 // 透视相机
 const camera = new THREE.PerspectiveCamera(
@@ -31,21 +34,31 @@ const camera = new THREE.PerspectiveCamera(
     2000
 )
 
-camera.position.set(5, 5, 5)
+camera.position.set(2, 2, 2)
 
 scene.add(camera)
 
 // 创建几何体
-const cubeGeometry = new THREE.BoxGeometry(1, 1, 1)
+const cubeGeometry = new THREE.BoxGeometry(1, 1, 1, 200, 200, 200)
 cubeGeometry.setAttribute('uv2', new THREE.BufferAttribute(cubeGeometry.attributes.uv.array, 2))
 
-const cubeMaterial = new THREE.MeshBasicMaterial({
+const cubeMaterial = new THREE.MeshStandardMaterial({
     map: doorColorTexture,
     alphaMap: alphaTexture,
     transparent: true,
-    side: THREE.DoubleSide,
+    // side: THREE.DoubleSide,
     aoMap: aoTexture,
-    aoMapIntensity: 1
+    aoMapIntensity: 1,
+    displacementMap: doorHeightTexture,
+    displacementScale: 0.1,
+    // 粗糙度
+    roughness: 1,
+    roughnessMap: doorRoughnessTexture,
+    // 金属度
+    metalness: 1,
+    metalnessMap: doorMetalnessTexture,
+    // 法相贴图
+    normalMap: doorNormalTexture,
 })
 
 // 根据几何体和材质创建物体
@@ -55,12 +68,12 @@ scene.add(cube)
 
 /* --------------------- 灯光 ------------------- */
 // 环境光
-const light = new THREE.AmbientLight(0xfffffff, 0.3)
+const light = new THREE.AmbientLight(0xfffffff, 0.5)
 
 // 直线光
 const directionalLight = new THREE.DirectionalLight(0xfffffff, 1)
 
-directionalLight.position.set(-10, 10, 10)
+directionalLight.position.set(10, 10, 10)
 
 scene.add(directionalLight)
 
