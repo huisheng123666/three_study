@@ -23,69 +23,45 @@ scene.add(camera)
 
 
 /* ------------------------------ 物体 -------------------------------- */
-const sphereGeometry = new THREE.SphereGeometry(1, 30, 30)
-const sphereMaterial = new THREE.MeshStandardMaterial({})
-const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial)
+const particleGeometry = new THREE.BufferGeometry()
+const count = 5000
+const positions = new Float32Array(count * 3)
+const colors = new Float32Array(count * 3)
 
-scene.add(sphere)
+for (let i = 0; i < count * 3; i++) {
+    positions[i] = Math.random() * 30 - 15
+    colors[i] = Math.random()
+}
 
+particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
 
-const planGeometry = new THREE.PlaneBufferGeometry(50, 50)
-const plane = new THREE.Mesh(planGeometry, sphereMaterial)
-plane.position.set(0, -1, 0)
-plane.rotation.x = -Math.PI / 2
+const pointMaterial = new THREE.PointsMaterial({
+    size: 0.2,
+    color: 0xfff000,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending
+})
 
-scene.add(plane)
+pointMaterial.vertexColors = true
 
+const textureLoader = new THREE.TextureLoader()
+const texture = textureLoader.load('/textures/particles/1.png')
+pointMaterial.map = texture
+pointMaterial.alphaMap = texture
+pointMaterial.transparent = true
 
+const points = new THREE.Points(particleGeometry, pointMaterial)
 
-
-/* ------------------------------- 灯光 ------------------------------ */
-// 环境光
-const light = new THREE.AmbientLight(0xfffffff, 0.5)
-scene.add(light)
-
-// 聚光灯
-const spotLight = new THREE.SpotLight(0xfffffff, 1000)
-
-spotLight.position.set(-10, 10, 10)
-scene.add(spotLight)
-spotLight.angle = Math.PI / 6
-gui.add(spotLight, 'angle').min(0).max(Math.PI / 2)
-spotLight.distance = 0
-gui.add(spotLight, 'distance').min(0).max(100).step(0.01)
-spotLight.penumbra = 0
-gui.add(spotLight, 'penumbra').min(0).max(1).step(0.01)
-spotLight.decay = 2
-gui.add(spotLight, 'decay').min(0).max(5).step(0.01)
-
+scene.add(points)
 
 
 /* ------------------------- 初始化渲染器 ---------------------------- */
 const renderer = new THREE.WebGLRenderer()
-renderer.physicallyCorrectLights = true
+renderer.shadowMap.enabled = true
+// renderer.physicallyCorrectLights = true
 renderer.setSize(window.innerWidth, window.innerHeight)
 document.body.append(renderer.domElement)
-
-
-
-/* ----------------------------- 阴影 ---------------------------- */
-renderer.shadowMap.enabled = true
-spotLight.castShadow = true
-sphere.castShadow = true
-// plane.castShadow = true
-plane.receiveShadow = true
-// 阴影模糊度
-spotLight.shadow.radius = 20
-// // 阴影清晰度
-spotLight.shadow.mapSize.set(4096, 4096)
-spotLight.target = sphere
-
-gui
-    .add(sphere.position, 'x')
-    .min(-5)
-    .max(5)
-    .step(0.1)
 
 /* ------------------------------------ 轨道控制器 -------------------------------------------------- */
 const controls = new OrbitControls(camera, renderer.domElement)
@@ -106,6 +82,7 @@ window.addEventListener('dblclick', () => {
     }
 })
 
+const clock = new THREE.Clock()
 
 function render() {
     renderer.render(scene, camera)

@@ -45,47 +45,53 @@ scene.add(plane)
 const light = new THREE.AmbientLight(0xfffffff, 0.5)
 scene.add(light)
 
+const smallBall = new THREE.Mesh(
+    new THREE.SphereBufferGeometry(0.2, 20, 20),
+    new THREE.MeshBasicMaterial({ color: 'red' })
+)
+smallBall.position.set(-2, 2, 2)
+scene.add(smallBall)
+
 // 聚光灯
-const spotLight = new THREE.SpotLight(0xfffffff, 1000)
+const pointLight = new THREE.PointLight(0xfff0000, 100)
 
-spotLight.position.set(-10, 10, 10)
-scene.add(spotLight)
-spotLight.angle = Math.PI / 6
-gui.add(spotLight, 'angle').min(0).max(Math.PI / 2)
-spotLight.distance = 0
-gui.add(spotLight, 'distance').min(0).max(100).step(0.01)
-spotLight.penumbra = 0
-gui.add(spotLight, 'penumbra').min(0).max(1).step(0.01)
-spotLight.decay = 2
-gui.add(spotLight, 'decay').min(0).max(5).step(0.01)
+smallBall.add(pointLight)
 
+pointLight.position.set(-2, 2, 2)
+// scene.add(pointLight)
+pointLight.distance = 0
+gui.add(pointLight, 'distance').min(0).max(100).step(0.01)
+pointLight.decay = 2
+gui.add(pointLight, 'decay').min(0).max(5).step(0.01)
 
-
-/* ------------------------- 初始化渲染器 ---------------------------- */
-const renderer = new THREE.WebGLRenderer()
-renderer.physicallyCorrectLights = true
-renderer.setSize(window.innerWidth, window.innerHeight)
-document.body.append(renderer.domElement)
 
 
 
 /* ----------------------------- 阴影 ---------------------------- */
-renderer.shadowMap.enabled = true
-spotLight.castShadow = true
+pointLight.castShadow = true
 sphere.castShadow = true
 // plane.castShadow = true
 plane.receiveShadow = true
 // 阴影模糊度
-spotLight.shadow.radius = 20
+pointLight.shadow.radius = 20
 // // 阴影清晰度
-spotLight.shadow.mapSize.set(4096, 4096)
-spotLight.target = sphere
+pointLight.shadow.mapSize.set(4096, 4096)
+pointLight.target = sphere
 
 gui
     .add(sphere.position, 'x')
     .min(-5)
     .max(5)
     .step(0.1)
+
+
+
+/* ------------------------- 初始化渲染器 ---------------------------- */
+const renderer = new THREE.WebGLRenderer()
+renderer.shadowMap.enabled = true
+renderer.physicallyCorrectLights = true
+renderer.setSize(window.innerWidth, window.innerHeight)
+document.body.append(renderer.domElement)
 
 /* ------------------------------------ 轨道控制器 -------------------------------------------------- */
 const controls = new OrbitControls(camera, renderer.domElement)
@@ -106,8 +112,14 @@ window.addEventListener('dblclick', () => {
     }
 })
 
+const clock = new THREE.Clock()
 
 function render() {
+    let time = clock.getElapsedTime()
+    smallBall.position.x = Math.sin(time) * 3
+    smallBall.position.z = Math.cos(time) * 3
+    smallBall.position.y = 2 + Math.sin(time)
+
     renderer.render(scene, camera)
     camera.updateProjectionMatrix()
     controls.update()
