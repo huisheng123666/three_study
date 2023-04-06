@@ -1,2 +1,2 @@
-import './lesson/lizi/lesson1'
+import './lesson/raycaster'
 // import './model/pie'
