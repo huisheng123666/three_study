@@ -50,6 +50,8 @@ scene.add(floor)
 const world = new CANNON.World()
 world.gravity.set(0, -9.8, 0)
 const sphereShape = new CANNON.Sphere(1)
+// friction: 0.1,//摩擦力
+// restitution: 0.7,//反弹力
 const sphereWorldMaterial = new CANNON.Material({
     restitution: 1
 })
@@ -68,6 +70,8 @@ const floorBody = new CANNON.Body({
     position: new CANNON.Vec3(0, -5, 0),
     material: new CANNON.Material({ restitution: 0.7 })
 })
+// 在cannon.js中，我们只能使用四元数(Quaternion)来旋转，可以通过setFromAxisAngle(…)方法，第一个参数是旋转轴，第二个参数是角度
+// (1, 0, 0) x轴旋转
 floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2)
 world.addBody(floorBody)
 // 碰撞事件
