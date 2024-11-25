@@ -1,6 +1,8 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import {CSG} from "three-csg-ts";
+// import {CSG} from "three-csg-ts";
+
+import { SUBTRACTION, Brush, Evaluator } from 'three-bvh-csg';
 
 // 创建一个场景
 var scene = new THREE.Scene();
@@ -32,20 +34,38 @@ document.body.appendChild( renderer.domElement );
 
 // scene.add(subRes)
 
-const geometry1 = new THREE.CylinderGeometry( 2, 2, 1, 32, 1, false, 0, Math.PI * 1.5);
-const material = new THREE.MeshBasicMaterial( {color: 0xffffff} );
-const pieOut = new THREE.Mesh( geometry1, material );
+const geometry2 = new THREE.CylinderGeometry( 1.3, 1.3, 2, 32, 10);
 
-const geometry2 = new THREE.CylinderGeometry( 1.5, 1.5, 1, 32, 1, false, 0, Math.PI * 1.5);
-const pieIn = new THREE.Mesh( geometry2, material );
-// scene.add( cylinder );
+const material = new THREE.MeshNormalMaterial(  );
 
-pieOut.updateMatrix()
-pieIn.updateMatrix()
+const brush2 = new Brush(geometry2, material);
+brush2.updateMatrixWorld();
 
-const subRes = CSG.subtract(pieOut, pieIn);
+const evaluator = new Evaluator();
 
-scene.add(subRes)
+const shape = new THREE.Shape();
+shape.moveTo( 0,0 );
+shape.absarc(0, 0, 2, 0, Math.PI * 1.8)
+shape.lineTo( 0,  0);
+
+const extrudeSettings = {
+  curveSegments: 48,
+  steps: 1,
+  depth: 0.6,
+  bevelEnabled: false,
+  bevelThickness: 1,
+  bevelSize: 1,
+  bevelOffset: 0,
+  bevelSegments: 12,
+};
+
+const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+geometry.rotateX(Math.PI/2)
+const brush3 = new Brush( geometry, material ) ;
+brush3.position.y = 1
+brush3.updateMatrixWorld();
+const result2 = evaluator.evaluate( brush3, brush2, SUBTRACTION );
+scene.add(result2);
 
 const orbitControls = new OrbitControls(camera, renderer.domElement)
 
